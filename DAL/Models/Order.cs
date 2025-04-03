@@ -11,6 +11,8 @@ public partial class Order
 
     public int IdSuppliers { get; set; }
 
+
+
     public virtual ICollection<GoodsToOrder> GoodsToOrders { get; set; } = new List<GoodsToOrder>();
 
     public virtual Supplier IdSuppliersNavigation { get; set; } = null!;
