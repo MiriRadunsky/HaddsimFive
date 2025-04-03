@@ -51,12 +51,12 @@ namespace WebAPI.Controllers
             }
         }
 
-        [HttpGet("AllOrders")]
-        public async Task<IActionResult> AllOrders()
-        {
-            var orders = await orderManager.GetAllOrders();
-            return Ok(orders);
-        }
+        //[HttpGet("AllOrdersForSupplier")]
+        //public async Task<IActionResult> AllOrders([FromQuery] string company)
+        //{
+        //    var orders = await orderManager.GetAllOrdersWithGoods(company);
+        //    return Ok(orders);
+        //}
 
         [HttpPost("AddGoodsToSupplier")]
         public async Task<IActionResult> AddGoodsToSupplier([FromQuery] Dictionary<string, float> goodsWithQuantities,[FromBody]string company,int quantity)

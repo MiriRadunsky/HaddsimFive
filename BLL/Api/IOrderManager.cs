@@ -13,5 +13,7 @@ namespace BLL.Services
         Task<bool> InProgressOrder(int id);
         Task<bool> loginSupplierAsync(string comapny, string phone);
         Task CreatGood(Good good);
+        
+        //Task<List<Order>> GetAllOrdersWithGoods(string company);
     }
 }

@@ -33,6 +33,11 @@ namespace DAL.Service
             return await _context.Orders.FirstOrDefaultAsync(x => x.IdSuppliers == supplierid);
         }
 
+         public async Task<List<Order>> GetOrdersBySupplierId(int supplierId)
+        {
+            return await _context.Orders.Where(o => o.IdSuppliers == supplierId).ToListAsync();
+        }
+
 
         public async Task AddOrder(Order order)
         {
@@ -51,7 +56,24 @@ namespace DAL.Service
             }
         }
 
-       
+
+        public async Task AddGoodsToOrder(int orderId, List<GoodsToOrder> goodsToOrders)
+        {
+            var order = await _context.Orders.Include(o => o.GoodsToOrders).FirstOrDefaultAsync(o => o.Id == orderId);
+            if (order != null)
+            {
+                foreach (var goodsToOrder in goodsToOrders)
+                {
+                    goodsToOrder.IdOrders = orderId;
+                    order.GoodsToOrders.Add(goodsToOrder);
+                }
+                _context.Orders.Update(order);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+
+
 
 
 

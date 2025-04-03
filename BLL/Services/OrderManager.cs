@@ -61,9 +61,10 @@ namespace BLL.Services
                     IdGoods = goodFromDb.Id,
                     Quantity = good.Value
                 });
-
-                _orderService.AddOrder(order);
             }
+
+            await _orderService.AddOrder(order);
+            await _orderService.AddGoodsToOrder(order.Id, goodsList); // הוספת קריאה לפונקציה שמעדכנת את GoodsToOrder
 
             return true;
         }
@@ -160,6 +161,12 @@ namespace BLL.Services
 
             await _goodsService.AddGood(good);
         }
+        //public async Task<List<Order>> GetAllOrdersWithGoods( string company)
+        //{
+           
+           
+        //    return orders;
+        //}
     }
 }
 

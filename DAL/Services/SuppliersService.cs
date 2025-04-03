@@ -28,6 +28,8 @@ namespace DAL.Service
             return await _context.Suppliers.FirstOrDefaultAsync(x => x.Company == company);
         }
 
+        
+
         public async Task<Supplier> ProxyByCompanyAndPhoneNumber(string company,string phone)
         {
             return await _context.Suppliers.FirstOrDefaultAsync(x => x.Company == company&&x.PhoneNumber== phone);
@@ -38,5 +40,6 @@ namespace DAL.Service
             await _context.Suppliers.AddAsync(supplier);
             await _context.SaveChangesAsync();
         }
+       
     }
 }
