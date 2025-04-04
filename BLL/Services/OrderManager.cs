@@ -74,16 +74,26 @@ namespace BLL.Services
 
         public async Task<bool> ApproveOrder(int id)
         {
-            _orderService.ChangeOrderStatus(id, "approved");
-            return true;
+            var order = await _orderService.GetOrderById(id);
+            if (order.Status == "inProgress")
+            {
+                await _orderService.ChangeOrderStatus(id, "approved");
+                return true;
+            }
+            return false;
         }
-
 
         public async Task<bool> InProgressOrder(int id)
         {
-            _orderService.ChangeOrderStatus(id, "in progress");
-            return true;
+            var order = await _orderService.GetOrderById(id);
+            if (order.Status == "waiting")
+            {
+                _orderService.ChangeOrderStatus(id, "inProgress");
+                return true;
+            }
+            return false;
         }
+
         public async Task<bool> AddGoodsToSupplier(string company, Dictionary<string, float> goodsWithQuantities, int minQuantity)
         {
             var supplier = await _suppliersService.GetSupplierByCompany(company);
@@ -172,6 +182,10 @@ namespace BLL.Services
 
             foreach (var order in orders)
             {
+                if (order.IdSuppliers != supplierId)
+                {
+                    continue;
+                }
                 if (order.Status == "waiting" || order.Status == "in progress")
                 {
                     var goodsInOrder = await _goodsToOrderService.GetGoodsByOrder(order.Id);

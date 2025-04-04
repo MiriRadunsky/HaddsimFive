@@ -37,5 +37,20 @@ namespace WebAPI.Controllers
                 return BadRequest("Failed to create order.");
             }
         }
+
+
+        [HttpPut("ApproveOrder")]
+        public async Task<IActionResult> ApproveOrder([FromQuery] int id)
+        {
+            var result = await orderManager.ApproveOrder(id);
+            if (result)
+            {
+                return Ok("Order approved successfully.");
+            }
+            else
+            {
+                return BadRequest("Failed to approve order.");
+            }
+        }
     }
 }

@@ -73,17 +73,17 @@ namespace WebAPI.Controllers
         }
 
 
-        [HttpPut("ApproveOrder")]
-        public async Task<IActionResult> ApproveOrder([FromQuery] int id)
+        [HttpPut("InProgressOrder")]
+        public async Task<IActionResult> InProgressOrder([FromQuery] int id)
         {
-            var result = await orderManager.ApproveOrder(id);
+            var result = await orderManager.InProgressOrder(id);
             if (result)
             {
-                return Ok("Order approved successfully.");
+                return Ok("Order In Progress....");
             }
             else
             {
-                return BadRequest("Failed to approve order.");
+                return BadRequest("Failed In Progress order.");
             }
         }
     }
