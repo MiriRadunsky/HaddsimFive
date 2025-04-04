@@ -20,15 +20,17 @@ namespace BLL.Services
         private ISuppliersService _suppliersService;
         private IGoodsService _goodsService;
         private IGoodsToSuppliersService _goodsToSupplierService;
+        private IGoodsToOrderService _goodsToOrderService;
 
 
 
-        public OrderManager(IOrderService orderService, ISuppliersService isuppliersService, IGoodsService goodsService, IGoodsToSuppliersService goodsToSupplierService)
+        public OrderManager(IOrderService orderService, ISuppliersService isuppliersService, IGoodsService goodsService, IGoodsToSuppliersService goodsToSupplierService, IGoodsToOrderService goodsToOrderService)
         {
             _orderService = orderService;
             _suppliersService = isuppliersService;
             _goodsService = goodsService;
             _goodsToSupplierService = goodsToSupplierService;
+            _goodsToOrderService = goodsToOrderService;
         }
 
         public async Task<bool> CreateOrder(Dictionary<string, int> goodsWithPrices, Order order)
@@ -64,7 +66,7 @@ namespace BLL.Services
             }
 
             await _orderService.AddOrder(order);
-            await _orderService.AddGoodsToOrder(order.Id, goodsList); // הוספת קריאה לפונקציה שמעדכנת את GoodsToOrder
+            await _orderService.AddGoodsToOrder(order.Id, goodsList); 
 
             return true;
         }
@@ -161,12 +163,37 @@ namespace BLL.Services
 
             await _goodsService.AddGood(good);
         }
-        //public async Task<List<Order>> GetAllOrdersWithGoods( string company)
-        //{
-           
-           
-        //    return orders;
-        //}
+        public async Task<List<object>> GetAllOrdersWithGoodsForSupplier(string company)
+        {
+            var supplierId = await GetIdSupplierByCompanyName(company);
+            var orders = await _orderService.GetAllOrders();
+            var goods = await _goodsToSupplierService.GetGoodsBySupplierId(supplierId);
+            var ordersWithGoods = new List<object>();
+
+            foreach (var order in orders)
+            {
+                if (order.Status == "waiting" || order.Status == "in progress")
+                {
+                    var goodsInOrder = await _goodsToOrderService.GetGoodsByOrder(order.Id);
+                    if (goodsInOrder.Any(g => goods.Any(s => s.Id == g.IdGoods)))
+                    {
+                        ordersWithGoods.Add(new
+                        {
+                            OrderId = order.Id,
+                            OrderStatus = order.Status,
+                            Goods = goodsInOrder.Select(g => new
+                            {
+                                g.Id,
+                                g.IdGoodsNavigation.ProductName,
+                                g.Quantity
+                            }).ToList()
+                        });
+                    }
+                }
+            }
+
+            return ordersWithGoods;
+        }
     }
 }
 

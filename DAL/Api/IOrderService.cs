@@ -13,5 +13,7 @@ namespace DAL.Api
         Task<List<Order>> GetOrdersBySupplierId(int supplierId);
 
         Task AddGoodsToOrder(int orderId, List<GoodsToOrder> goodsToOrders);
+
+        
     }
 }
